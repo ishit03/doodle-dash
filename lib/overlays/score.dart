@@ -10,32 +10,35 @@ class ScoreOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      child: SizedBox(
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ValueListenableBuilder(
-                valueListenable: game.score,
-                builder: (context, value, child) {
-                  return Text(
-                    'SCORE - $value',
-                    style: const TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white60),
-                  );
-                }),
-            Expanded(child: Container()),
-            Text(
-              'Hi - ${game.highScore}',
-              style: const TextStyle(
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white60),
-            )
-          ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: SizedBox(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ValueListenableBuilder(
+                  valueListenable: game.score,
+                  builder: (context, value, child) {
+                    return Text(
+                      'SCORE - $value',
+                      style: const TextStyle(
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white60),
+                    );
+                  }),
+              Expanded(child: Container()),
+              Text(
+                'Hi - ${game.highScore}',
+                style: const TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white60),
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -16,7 +16,7 @@ void main() async {
     overlayBuilderMap: {
       'gameOver': (BuildContext context, DoodleDash game) =>
           GameOver(game: game),
-      'playing': (BuildContext context, DoodleDash game) =>
+      'score': (BuildContext context, DoodleDash game) =>
           ScoreOverlay(game: game),
       'intro': (BuildContext context, DoodleDash game) =>
           IntroOverlay(game: game),

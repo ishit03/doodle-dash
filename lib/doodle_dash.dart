@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:doodle_dash/cloud_manager.dart';
-import 'package:doodle_dash/sprites/sprites.dart';
+import 'package:doodle_dash/managers/cloud_manager.dart';
+import 'package:doodle_dash/managers/difficulty_manager.dart';
+import 'package:doodle_dash/sprites/dash.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/experimental.dart';
@@ -26,9 +27,7 @@ class DoodleDash extends FlameGame
   GameState state = GameState.intro;
 
   bool get isGameOver => state == GameState.gameOver;
-
   bool get isPlaying => state == GameState.playing;
-
   bool get isInitial => state == GameState.intro;
 
   Dash get dash => _dash;
@@ -44,6 +43,10 @@ class DoodleDash extends FlameGame
     children.register<CameraComponent>();
     children.register<CloudManager>();
 
+    ///To change the difficulty based on the score
+    score.addListener(
+        () => DifficultyManager.instance.handleScoreChange(score.value));
+
     await world.add(_cloudManager);
     await world.add(_dash);
 
@@ -57,20 +60,20 @@ class DoodleDash extends FlameGame
     super.update(dt);
     if (!isPlaying) return;
 
-    //To restrict camera from following dash when it is going down
+    ///To restrict camera from following dash when it is going down
     if (_dash.isGoingDown) {
       camera.setBounds(Rectangle.fromLTRB(
           0.0, double.negativeInfinity, size.x, camera.viewfinder.position.y));
     }
 
-    //If dash is outside the bottom of the screen, game is over.
+    ///If dash is outside the bottom of the screen, game is over.
     if (_dash.position.y > camera.viewfinder.position.y + size.y / 2 &&
         !camera.canSee(_dash)) {
       gameOver();
     }
   }
 
-  //To listen to gestures on mobile version
+  ///To listen to gestures on mobile version
   @override
   void onHorizontalDragUpdate(DragUpdateInfo info) {
     _dash.move(info.delta.global.x);
@@ -99,7 +102,7 @@ class DoodleDash extends FlameGame
   }
 
   void gameOver() {
-    overlays.remove('playing');
+    overlays.remove('score');
     _maybeUpdateHighscore();
     state = GameState.gameOver;
     overlays.add('gameOver');
@@ -109,7 +112,7 @@ class DoodleDash extends FlameGame
     overlays.remove('intro');
     state = GameState.playing;
     _dash.megaJump();
-    overlays.add('playing');
+    overlays.add('score');
   }
 
   void _resetCamera() {
@@ -117,7 +120,7 @@ class DoodleDash extends FlameGame
     camera = CameraComponent(world: world);
     camera
         .setBounds(Rectangle.fromLTRB(0.0, -double.maxFinite, size.x, size.y));
-    camera.follow(_dash, verticalOnly: true, snap: true);
+    camera.follow(_dash, maxSpeed: 600.0, verticalOnly: true, snap: true);
   }
 
   void _maybeUpdateHighscore() {
